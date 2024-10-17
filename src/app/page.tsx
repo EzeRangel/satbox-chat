@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Suspense } from "react";
 import { ChatAssistant } from "~/components/ChatAssistant";
 
 export default function Home() {
@@ -97,7 +98,9 @@ export default function Home() {
           Go to nextjs.org →
         </a>
       </footer>
-      <ChatAssistant />
+      <Suspense>
+        <ChatAssistant />
+      </Suspense>
     </div>
   );
 }
