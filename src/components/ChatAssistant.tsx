@@ -6,12 +6,14 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area";
 import { useChat } from "ai/react";
+import { ToolInvocation } from "ai";
+import { TaskCard } from "./TaskCard";
 
 const predefinedQuestions = [
-  "What services do you offer?",
-  "How can I contact support?",
-  "What are your business hours?",
-  "Do you have a refund policy?",
+  "Pre-inscripción en el RFC",
+  "Inscripción en el RFC",
+  "Generar contraseña del SAT",
+  "Generar e.firma",
 ];
 
 export function ChatAssistant() {
@@ -24,7 +26,9 @@ export function ChatAssistant() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { messages, input, isLoading, handleInputChange, handleSubmit } =
-    useChat();
+    useChat({
+      api: "/api/chat",
+    });
 
   useEffect(() => {
     localStorage.setItem("chatOpen", isOpen.toString());
@@ -70,33 +74,56 @@ export function ChatAssistant() {
             </Button>
           </div>
           <ScrollArea className="flex-grow p-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`mb-4 ${
-                  message.role === "user" ? "text-right" : "text-left"
-                }`}
-              >
+            {messages.map((message) => {
+              return (
                 <div
-                  className={`inline-block p-2 rounded-lg text-sm ${
-                    message.role === "user"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted"
+                  key={message.id}
+                  className={`mb-4 ${
+                    message.role === "user" ? "text-right" : "text-left"
                   }`}
                 >
-                  {message.content}
-                  {message?.createdAt ? (
-                    <div className="text-xs mt-1 opacity-50">
-                      {formatTimestamp(message.createdAt?.getUTCMilliseconds())}
-                    </div>
-                  ) : null}
+                  <div
+                    className={`inline-block p-2 rounded-lg text-sm ${
+                      message.role === "user"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted"
+                    }`}
+                  >
+                    {message.content}
+                    {message.toolInvocations?.map(
+                      (toolInvocation: ToolInvocation) => {
+                        const toolCallId = toolInvocation.toolCallId;
+
+                        if (toolInvocation.toolName === "tasks") {
+                          return (
+                            <div key={toolCallId}>
+                              {"result" in toolInvocation ? (
+                                <TaskCard {...toolInvocation.result.tasks} />
+                              ) : (
+                                <span>{toolInvocation.args.message}</span>
+                              )}
+                            </div>
+                          );
+                        }
+
+                        return null;
+                      }
+                    )}
+                    {message?.createdAt ? (
+                      <div className="text-xs mt-1 opacity-50">
+                        {formatTimestamp(
+                          message.createdAt?.getUTCMilliseconds()
+                        )}
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             {isLoading && (
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span>Assistant is typing...</span>
+                <span>Escribiendo...</span>
               </div>
             )}
             <div ref={messagesEndRef} />
