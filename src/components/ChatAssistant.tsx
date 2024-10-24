@@ -19,6 +19,7 @@ export function ChatAssistant() {
     append,
   } = useChat({
     api: "/api/chat",
+    maxSteps: 2,
   });
 
   useEffect(() => {
