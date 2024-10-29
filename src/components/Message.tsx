@@ -1,5 +1,5 @@
 import { Message as ChatMessage, ToolInvocation } from "ai";
-import { TaskCard } from "./TaskCard";
+import TaskManager from "./TaskManager";
 
 type Props = ChatMessage;
 
@@ -24,7 +24,7 @@ export default function Message(props: Props) {
             return (
               <div key={toolCallId}>
                 {"result" in toolInvocation ? (
-                  <TaskCard {...toolInvocation.result.tasks} />
+                  <TaskManager tasks={toolInvocation.result.tasks} />
                 ) : (
                   <span>{toolInvocation.args.message}</span>
                 )}

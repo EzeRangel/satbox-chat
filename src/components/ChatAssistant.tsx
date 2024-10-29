@@ -1,12 +1,17 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useChat } from "ai/react";
+import dynamic from "next/dynamic";
 import { BotMessageSquare, Send } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { useChat } from "ai/react";
 import ChatList from "./ChatList";
-import { useEffect, useState } from "react";
 import Start from "./Start";
+
+const CurrentStepHeader = dynamic(() => import("./CurrentStepHeader"), {
+  ssr: false,
+});
 
 export function ChatAssistant() {
   const [isNewChat, setNewChat] = useState(true);
@@ -19,7 +24,7 @@ export function ChatAssistant() {
     append,
   } = useChat({
     api: "/api/chat",
-    maxSteps: 2,
+    maxSteps: 3,
   });
 
   useEffect(() => {
@@ -35,9 +40,12 @@ export function ChatAssistant() {
   return (
     <div className="w-full h-screen md:h-[calc(100vh-32px)] bg-background border rounded-lg overflow-hidden flex flex-col shadow-lg animate-in slide-in-from-bottom-5 duration-300">
       <div className="p-4 border-b flex items-center bg-muted gap-2">
-        <BotMessageSquare />
-        <h2 className="font-semibold">SATBot</h2>
+        <div className="flex items-center gap-2">
+          <BotMessageSquare />
+          <h2 className="font-semibold">SATBot</h2>
+        </div>
       </div>
+      <CurrentStepHeader />
       {isNewChat ? (
         <Start onPickOption={handleConversationStarter} />
       ) : (
