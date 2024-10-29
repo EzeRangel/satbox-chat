@@ -9,6 +9,9 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Task } from "~/types/Task";
+import { Accordion, AccordionContent, AccordionItem } from "./ui/accordion";
+import { AccordionTrigger } from "@radix-ui/react-accordion";
+import { ChevronDown } from "lucide-react";
 
 interface Props {
   data: Task;
@@ -45,41 +48,47 @@ export function TaskCard({ data, onStartTask }: Props) {
               {description}
             </p>
           </div>
-          <div className="flex items-start gap-2">
-            {guideUrl ? (
-              <p>
-                <strong>Guía Oficial: </strong>
-                <a
-                  href={guideUrl}
-                  target="_blank"
-                  className="underline text-blue-500"
-                >
-                  Guía Oficial del SAT
-                </a>
-              </p>
-            ) : null}
-          </div>
-          <div className="flex items-start gap-2">
-            {taskType ? (
-              <p>
-                <strong>Dónde hacerlo: </strong>
-                <span>{taskType === "ONLINE" ? "En línea" : "Presencial"}</span>
-              </p>
-            ) : null}
-          </div>
-          <div className="flex items-start gap-2">
-            {!hasDocs ? (
-              <p>
-                <strong>Documentación: </strong>
-                <span>Ninguna</span>
-              </p>
-            ) : null}
-          </div>
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="details" className="border-none">
+              <AccordionTrigger className="flex items-start gap-2">
+                <ChevronDown className="w-5 h-5" />
+                <strong>Más información</strong>
+              </AccordionTrigger>
+              <AccordionContent className="flex flex-col gap-2 p-4">
+                {guideUrl ? (
+                  <p>
+                    <strong>Guía Oficial: </strong>
+                    <a
+                      href={guideUrl}
+                      target="_blank"
+                      className="underline text-blue-500"
+                    >
+                      Guía Oficial del SAT
+                    </a>
+                  </p>
+                ) : null}
+                {taskType ? (
+                  <p>
+                    <strong>Dónde hacerlo: </strong>
+                    <span>
+                      {taskType === "ONLINE" ? "En línea" : "Presencial"}
+                    </span>
+                  </p>
+                ) : null}
+                {!hasDocs ? (
+                  <p>
+                    <strong>Documentación: </strong>
+                    <span>Ninguna</span>
+                  </p>
+                ) : null}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </CardContent>
       <CardFooter>
         <Button
-          variant="outline"
+          variant="secondary"
           className="w-full"
           onClick={() => {
             onStartTask(data.id);
