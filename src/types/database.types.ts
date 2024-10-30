@@ -1,3 +1,10 @@
+export type TaskDocument = {
+  name: string;
+  type: string;
+  mandatory: boolean;
+  context?: string;
+};
+
 export type Json =
   | string
   | number
@@ -6,14 +13,32 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-export type TaskDocument = {
-  name: string;
-  type: string;
-  mandatory: boolean;
-  context?: string;
-};
-
 export type Database = {
+  graphql_public: {
+    Tables: {
+      [_ in never]: never;
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      graphql: {
+        Args: {
+          operationName?: string;
+          query?: string;
+          variables?: Json;
+          extensions?: Json;
+        };
+        Returns: Json;
+      };
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
+  };
   public: {
     Tables: {
       tasks: {
@@ -24,12 +49,13 @@ export type Database = {
           guide_url: string | null;
           id: number;
           is_final: boolean | null;
-          name: string;
+          keywords: string[] | null;
+          name: string | null;
           next_task_id: number | null;
           output: string | null;
-          required_docs: TaskDocument[] | null;
+          required_docs: Json | null;
           step_order: number | null;
-          task_type: string;
+          task_type: string | null;
           updated_at: string | null;
         };
         Insert: {
@@ -37,14 +63,15 @@ export type Database = {
           created_at?: string;
           description?: string | null;
           guide_url?: string | null;
-          id?: number;
+          id?: never;
           is_final?: boolean | null;
-          name: string;
+          keywords?: string[] | null;
+          name?: string | null;
           next_task_id?: number | null;
           output?: string | null;
           required_docs?: Json | null;
           step_order?: number | null;
-          task_type: string;
+          task_type?: string | null;
           updated_at?: string | null;
         };
         Update: {
@@ -52,14 +79,15 @@ export type Database = {
           created_at?: string;
           description?: string | null;
           guide_url?: string | null;
-          id?: number;
+          id?: never;
           is_final?: boolean | null;
-          name?: string;
+          keywords?: string[] | null;
+          name?: string | null;
           next_task_id?: number | null;
           output?: string | null;
           required_docs?: Json | null;
           step_order?: number | null;
-          task_type?: string;
+          task_type?: string | null;
           updated_at?: string | null;
         };
         Relationships: [
@@ -77,7 +105,27 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      get_chained_tasks_by_name: {
+        Args: {
+          search_term: string;
+        };
+        Returns: {
+          action_url: string | null;
+          created_at: string;
+          description: string | null;
+          guide_url: string | null;
+          id: number;
+          is_final: boolean | null;
+          keywords: string[] | null;
+          name: string | null;
+          next_task_id: number | null;
+          output: string | null;
+          required_docs: Json | null;
+          step_order: number | null;
+          task_type: string | null;
+          updated_at: string | null;
+        }[];
+      };
     };
     Enums: {
       [_ in never]: never;
