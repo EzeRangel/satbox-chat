@@ -56,32 +56,7 @@ export async function POST(req: Request) {
       Tus respuestas deben ser BREVES, a lo mucho 2 - 3 oraciones.
       `,
     messages: convertToCoreMessages(messages),
-    tools: {
-      tasks: tool({
-        description:
-          "Obtiene las tareas relacionadas dependiendo de la opción elegida del usuario." +
-          "Si el usuario no elige ninguna opción entonces iniciar desde la primer tarea que es: 'Pre-inscripción en el RFC'",
-        parameters: z.object({
-          task: z
-            .string()
-            .describe(
-              "La tarea que el usuario quiere completar. Usualmente es necesario antes preguntarle al usuario qué quiere hacer, por default la primer tarea debe ser pre-inscribirse al RFC"
-            ),
-        }),
-        execute: async ({ task }) => {
-          console.log(task);
-
-          const { data } = await supabase
-            .from("tasks")
-            .select()
-            .eq("name", task)
-            .limit(1)
-            .single();
-
-          return { tasks: data };
-        },
-      }),
-    },
+    tools: tools,
   });
 
   return result.toDataStreamResponse();
