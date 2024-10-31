@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "~/components/ui/button";
+import { Button, buttonVariants } from "~/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,15 +11,23 @@ import {
 import { Task } from "~/types/Task";
 import { Accordion, AccordionContent, AccordionItem } from "./ui/accordion";
 import { AccordionTrigger } from "@radix-ui/react-accordion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ExternalLink } from "lucide-react";
+import { useState } from "react";
+import Link from "next/link";
+import { DocumentList } from "./DocumentList";
 
 interface Props {
   data: Task;
-  onStartTask: (id: number) => void;
-  onCompletetask?: (id: number) => void;
+  onStartTask: (id: number) => Promise<void>;
+  onCompletetask?: (id: number) => Promise<void>;
 }
 
-export function TaskCard({ data, onStartTask }: Props) {
+type TaskStatus = "idle" | "started" | "completed";
+
+export function TaskCard({ data, onStartTask, onCompletetask }: Props) {
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<TaskStatus>("idle");
+
   const {
     name,
     description,
@@ -30,6 +38,23 @@ export function TaskCard({ data, onStartTask }: Props) {
   } = data;
 
   const hasDocs = requiredDocs && requiredDocs.length >= 1;
+
+  const handleStartTask = async (id: number) => {
+    setLoading(true);
+
+    await onStartTask(id);
+
+    setLoading(false);
+    setStatus("started");
+  };
+
+  const handleCompleteTask = async () => {
+    setLoading(true);
+
+    await onCompletetask?.(data.id);
+    setLoading(false);
+    setStatus("completed");
+  };
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -89,15 +114,34 @@ export function TaskCard({ data, onStartTask }: Props) {
         </div>
       </CardContent>
       <CardFooter>
-        <Button
-          variant="secondary"
-          className="w-full"
-          onClick={() => {
-            onStartTask(data.id);
-          }}
-        >
-          Iniciar tarea
-        </Button>
+        {status === "started" ? (
+          <div className="w-full flex flex-col gap-2">
+            {data?.action_url ? (
+              <Link
+                href={data.action_url}
+                target="_blank"
+                className={buttonVariants({ variant: "secondary" })}
+              >
+                Ir al sitio del SAT
+                <ExternalLink className="w-4 h-4 ml-3" />
+              </Link>
+            ) : null}
+            <Button variant="default" onClick={handleCompleteTask}>
+              Completar tarea
+            </Button>
+          </div>
+        ) : (
+          <Button
+            disabled={loading}
+            className="w-full"
+            onClick={() => {
+              handleStartTask(data.id);
+            }}
+            variant="default"
+          >
+            {loading ? "Preparando todo..." : "Iniciar tarea"}
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );
