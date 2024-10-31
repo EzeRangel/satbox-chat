@@ -53,7 +53,7 @@ export type Database = {
           name: string | null;
           next_task_id: number | null;
           output: string | null;
-          required_docs: Json | null;
+          required_docs: TaskDocument[] | null;
           step_order: number | null;
           task_type: string | null;
           updated_at: string | null;

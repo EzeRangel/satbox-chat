@@ -75,12 +75,14 @@ export function TaskCard({ data, onStartTask }: Props) {
                     </span>
                   </p>
                 ) : null}
-                {!hasDocs ? (
-                  <p>
-                    <strong>Documentación: </strong>
-                    <span>Ninguna</span>
-                  </p>
-                ) : null}
+                {!hasDocs ? null : (
+                  <div>
+                    <p className="mb-3">
+                      <strong>Qué necesitas</strong>
+                    </p>
+                    <DocumentList documents={requiredDocs!} />
+                  </div>
+                )}
               </AccordionContent>
             </AccordionItem>
           </Accordion>
