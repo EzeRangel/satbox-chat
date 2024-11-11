@@ -25,6 +25,8 @@ export default function TaskManager({ tasks }: Props) {
 
     if (nextTaskId) {
       setTasks({ currentTaskId: nextTaskId, totalSteps: tasks });
+
+      // Aquí debería enviar un mensaje al chat para que tenga contexto que se terminó la tarea.
     } else {
       // TODO: Si es el final mostrar algo que indique que se terminaron las tareas.
     }
@@ -34,26 +36,14 @@ export default function TaskManager({ tasks }: Props) {
   if (!data && tasks.length >= 1) {
     const task = tasks[0];
 
-    return (
-      <TaskCard
-        data={task}
-        onStartTask={handleStartTask}
-        onCompletetask={handleCompleteTask}
-      />
-    );
+    return <TaskCard data={task} />;
   }
 
   // Hay una tareas actuales.
   if (data) {
     const task = tasks.find((t) => t.id === data.currentTaskId);
 
-    return (
-      <TaskCard
-        data={task!}
-        onStartTask={handleStartTask}
-        onCompletetask={handleCompleteTask}
-      />
-    );
+    return <TaskCard data={task!} />;
   }
 
   return null;
