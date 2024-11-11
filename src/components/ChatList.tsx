@@ -4,7 +4,8 @@ import { Message } from "ai";
 import { ScrollArea } from "./ui/scroll-area";
 import { useEffect, useRef } from "react";
 import { Loader2 } from "lucide-react";
-import UserMessage from "./Message";
+import { BotMessage, UserMessage } from "./Message";
+// import UserMessage from "./Message";
 
 interface Props {
   messages: Message[];
@@ -25,7 +26,11 @@ export default function ChatList({ messages, isLoading = false }: Props) {
   return (
     <ScrollArea className="flex-grow p-4">
       {messages.map((message) => {
-        return <UserMessage key={message.id} {...message} />;
+        if (message.role === "user") {
+          return <UserMessage key={message.id}>{message.content}</UserMessage>;
+        }
+
+        return <BotMessage key={message.id} {...message} />;
       })}
       {isLoading && (
         <div className="flex items-center space-x-2 text-sm text-muted-foreground">
