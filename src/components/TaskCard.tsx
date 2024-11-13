@@ -32,7 +32,7 @@ export function TaskCard({ data }: Props) {
   const hasDocs = requiredDocs && requiredDocs.length >= 1;
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle className="text-lg font-semibold flex items-start gap-2">
           <span className="text-primary">💡</span>
