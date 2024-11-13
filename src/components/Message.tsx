@@ -57,6 +57,32 @@ export function BotMessage(props: ChatMessage) {
   );
 }
 
+export function BotCard(props: ChatMessage) {
+  return (
+    <div className={`mb-4 text-left`}>
+      <div className={`p-2 rounded-lg text-sm`}>
+        {props.toolInvocations?.map((toolInvocation: ToolInvocation) => {
+          const toolCallId = toolInvocation.toolCallId;
+
+          if (toolInvocation.toolName === "tasks") {
+            return (
+              <div key={toolCallId}>
+                {"result" in toolInvocation ? (
+                  <TaskManager tasks={toolInvocation.result.tasks} />
+                ) : (
+                  <span>{toolInvocation.args.message}</span>
+                )}
+              </div>
+            );
+          }
+
+          return null;
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function Message(props: Props) {
   return (
     <div
