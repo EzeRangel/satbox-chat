@@ -41,6 +41,48 @@ export type Database = {
   };
   public: {
     Tables: {
+      task_relations: {
+        Row: {
+          created_at: string | null;
+          id: number;
+          related_task_id: number;
+          relation_type: string | null;
+          task_id: number;
+          updated_at: string | null;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: number;
+          related_task_id: number;
+          relation_type?: string | null;
+          task_id: number;
+          updated_at?: string | null;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: number;
+          related_task_id?: number;
+          relation_type?: string | null;
+          task_id?: number;
+          updated_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "task_relations_related_task_id_fkey";
+            columns: ["related_task_id"];
+            isOneToOne: false;
+            referencedRelation: "tasks";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "task_relations_task_id_fkey";
+            columns: ["task_id"];
+            isOneToOne: false;
+            referencedRelation: "tasks";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       tasks: {
         Row: {
           action_url: string | null;
@@ -49,11 +91,10 @@ export type Database = {
           guide_url: string | null;
           id: number;
           is_final: boolean | null;
-          keywords: string[] | null;
           name: string | null;
           next_task_id: number | null;
           output: string | null;
-          required_docs: TaskDocument[] | null;
+          required_docs: Json | null;
           step_order: number | null;
           task_type: string | null;
           updated_at: string | null;
@@ -65,7 +106,6 @@ export type Database = {
           guide_url?: string | null;
           id?: never;
           is_final?: boolean | null;
-          keywords?: string[] | null;
           name?: string | null;
           next_task_id?: number | null;
           output?: string | null;
@@ -81,7 +121,6 @@ export type Database = {
           guide_url?: string | null;
           id?: never;
           is_final?: boolean | null;
-          keywords?: string[] | null;
           name?: string | null;
           next_task_id?: number | null;
           output?: string | null;
@@ -116,7 +155,6 @@ export type Database = {
           guide_url: string | null;
           id: number;
           is_final: boolean | null;
-          keywords: string[] | null;
           name: string | null;
           next_task_id: number | null;
           output: string | null;
@@ -125,6 +163,12 @@ export type Database = {
           task_type: string | null;
           updated_at: string | null;
         }[];
+      };
+      search_task: {
+        Args: {
+          query: string;
+        };
+        Returns: number;
       };
     };
     Enums: {
