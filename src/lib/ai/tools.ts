@@ -1,6 +1,6 @@
 import { tool } from "ai";
 import { z } from "zod";
-import supabase from "../supabase/client";
+import { createClient } from "../supabase/server";
 
 const taskTool = tool({
   description:
@@ -16,6 +16,7 @@ const taskTool = tool({
     const query = task.split(" ").join("+");
     console.log(query);
 
+    const supabase = await createClient();
     const { data, error } = await supabase.rpc("get_chained_tasks_by_name", {
       search_term: query,
     });
